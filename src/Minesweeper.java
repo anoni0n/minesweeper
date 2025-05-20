@@ -1,39 +1,32 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 public class Minesweeper {
-    private JButton[][] board = new JButton[10][10];
-    private JFrame frame = new JFrame("Minesweeper");
-    private JPanel buttonPanel = new JPanel();
-    private JPanel gamePanel = new JPanel() {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-        }
-    };
+    private final JFrame frame = new JFrame("Minesweeper");
+    private final JPanel panel  = new JPanel(new GridLayout(10, 10, 0, 0));
+    public static Tile[][] BOARD = new Tile[10][10];
+    public static boolean GAME_ACTIVE = false;
 
-    public Minesweeper(){
-        frame.setSize(800,800);
-        frame.setResizable(true);
-        frame.setVisible(true);
+
+    public Minesweeper() {
+        initialize();
+    }
+
+    private void initialize() {
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(600, 600);
         frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(gamePanel);
-        for (int i = 0; i < 10; i++){
-            for (int j = 0; j < 10; j++){
-                JButton button = new JButton();
-                button.setPreferredSize(new Dimension(50,50));
-                button.setFocusable(false);
-                button.setEnabled(true);
-                button.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("./images/minesweeper-tile.png"))));
-                button.setVisible(true);
-                buttonPanel.add(button);
-                board[i][j] = button;
-            }
 
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                Tile tile = new Tile(new JButton(),i,j);
+                BOARD[i][j] = tile;
+                panel.add(tile.getButton());
+            }
         }
-        frame.add(buttonPanel);
-        gamePanel.repaint();
+
+        frame.add(panel);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
