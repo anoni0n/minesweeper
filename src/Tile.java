@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -16,15 +15,15 @@ public class Tile {
     private ImageIcon icon;
     private boolean bomb;
     private boolean flagged;
-    private final Tile[][] BOARD = Minesweeper.BOARD;
+    private static Tile[][] BOARD = Minesweeper.BOARD;
     private ActionListener actionListener;
     public static int TILES_CLEARED = 0;
     public static int imgDimensions = 600/Minesweeper.BOARD_DIMENSIONS;
-    private static final ArrayList<Tile> bombTiles = new ArrayList<>();
-    public static final ImageIcon CLEARED_TILE = new ImageIcon((new ImageIcon((Objects.requireNonNull(Tile.class.getResource("images/minesweeper-cleared.png")))).getImage()).getScaledInstance(imgDimensions,imgDimensions,java.awt.Image.SCALE_SMOOTH));
-    public static final ImageIcon UNCLEARED_TILE = new ImageIcon((new ImageIcon((Objects.requireNonNull(Tile.class.getResource("images/minesweeper-uncleared.png")))).getImage()).getScaledInstance(imgDimensions,imgDimensions,java.awt.Image.SCALE_SMOOTH));
-    public static final ImageIcon BOMB_TILE = new ImageIcon((new ImageIcon((Objects.requireNonNull(Tile.class.getResource("images/minesweeper-bomb.png")))).getImage()).getScaledInstance(imgDimensions,imgDimensions,java.awt.Image.SCALE_SMOOTH));
-    public static final ImageIcon FLAG_TILE = new ImageIcon((new ImageIcon((Objects.requireNonNull(Tile.class.getResource("images/minesweeper-flag.png")))).getImage()).getScaledInstance(imgDimensions,imgDimensions,java.awt.Image.SCALE_SMOOTH));
+    private static ArrayList<Tile> bombTiles = new ArrayList<>();
+    public static ImageIcon CLEARED_TILE = new ImageIcon((new ImageIcon((Objects.requireNonNull(Tile.class.getResource("images/minesweeper-cleared.png")))).getImage()).getScaledInstance(imgDimensions,imgDimensions, Image.SCALE_SMOOTH));
+    public static ImageIcon UNCLEARED_TILE = new ImageIcon((new ImageIcon((Objects.requireNonNull(Tile.class.getResource("images/minesweeper-uncleared.png")))).getImage()).getScaledInstance(imgDimensions,imgDimensions,java.awt.Image.SCALE_SMOOTH));
+    public static ImageIcon BOMB_TILE = new ImageIcon((new ImageIcon((Objects.requireNonNull(Tile.class.getResource("images/minesweeper-bomb.png")))).getImage()).getScaledInstance(imgDimensions,imgDimensions,java.awt.Image.SCALE_SMOOTH));
+    public static ImageIcon FLAG_TILE = new ImageIcon((new ImageIcon((Objects.requireNonNull(Tile.class.getResource("images/minesweeper-flag.png")))).getImage()).getScaledInstance(imgDimensions,imgDimensions,java.awt.Image.SCALE_SMOOTH));
     public Tile(JButton button, int row, int col){
         this.button = button;
         this.row = row;
@@ -58,8 +57,8 @@ public class Tile {
                 for (int i = 0; i < Minesweeper.BOARD_DIMENSIONS; i++){
                     for (int j = 0; j < Minesweeper.BOARD_DIMENSIONS; j++){
                         if (isNear(i,row,1) && isNear(j,col,1)){
-                            Minesweeper.BOARD[i][j].setIcon(CLEARED_TILE);
-                            Minesweeper.BOARD[i][j].disableButton();
+                            BOARD[i][j].setIcon(CLEARED_TILE);
+                            BOARD[i][j].disableButton();
                             clearedCount++;
                         }
                     }
@@ -82,7 +81,7 @@ public class Tile {
                         }
                     }
                 }
-                while (clearedCount < 40){
+                while (clearedCount < Minesweeper.BOARD_DIMENSIONS){
                     int randomRow = (int) (Math.random()*Minesweeper.BOARD_DIMENSIONS);
                     int randomCol = (int) (Math.random()*Minesweeper.BOARD_DIMENSIONS);
                     if (isNear(randomRow,row,2) && isNear(randomCol,col,2) && !BOARD[randomRow][randomCol].isBomb()){
@@ -153,26 +152,24 @@ public class Tile {
                 else if (bombCount == 0){
                     ArrayList<Tile> emptyTiles = new ArrayList<>();
                     emptyTiles.add(this);
-                    //while (!emptyTiles.isEmpty()) {
-                        for (int k = 0; k < emptyTiles.size(); k++) {
-                            for (int i = 0; i < Minesweeper.BOARD_DIMENSIONS; i++) {
-                                for (int j = 0; j < Minesweeper.BOARD_DIMENSIONS; j++) {
-                                    if (BOARD[i][j].getIcon().equals(UNCLEARED_TILE) && isNear(BOARD[i][j].getRow(), emptyTiles.get(k).getRow(), 1) && isNear(BOARD[i][j].getCol(), emptyTiles.get(k).getCol(), 1)) {
-                                        if (BOARD[i][j].getBombCount() == 0) {
-                                            BOARD[i][j].setIcon(CLEARED_TILE);
-                                            emptyTiles.add(BOARD[i][j]);
-                                        } else {
-                                            BOARD[i][j].setIcon(new ImageIcon((new ImageIcon((Objects.requireNonNull(Tile.class.getResource("images/minesweeper-" + BOARD[i][j].getBombCount() + ".png")))).getImage()).getScaledInstance(imgDimensions, imgDimensions, Image.SCALE_SMOOTH)));
-                                        }
-                                        BOARD[i][j].disableButton();
-                                        TILES_CLEARED++;
+                    for (int k = 0; k < emptyTiles.size(); k++) {
+                        for (int i = 0; i < Minesweeper.BOARD_DIMENSIONS; i++) {
+                            for (int j = 0; j < Minesweeper.BOARD_DIMENSIONS; j++) {
+                                if (BOARD[i][j].getIcon().equals(UNCLEARED_TILE) && isNear(BOARD[i][j].getRow(), emptyTiles.get(k).getRow(), 1) && isNear(BOARD[i][j].getCol(), emptyTiles.get(k).getCol(), 1)) {
+                                    if (BOARD[i][j].getBombCount() == 0) {
+                                        BOARD[i][j].setIcon(CLEARED_TILE);
+                                        emptyTiles.add(BOARD[i][j]);
+                                    } else {
+                                        BOARD[i][j].setIcon(new ImageIcon((new ImageIcon((Objects.requireNonNull(Tile.class.getResource("images/minesweeper-" + BOARD[i][j].getBombCount() + ".png")))).getImage()).getScaledInstance(imgDimensions, imgDimensions, Image.SCALE_SMOOTH)));
                                     }
+                                    BOARD[i][j].disableButton();
+                                    TILES_CLEARED++;
                                 }
                             }
-                            emptyTiles.remove(k);
-                            k--;
                         }
-                    //}
+                        emptyTiles.remove(k);
+                        k--;
+                    }
                 }
                 else {
                     if (getBombCount()>0){
@@ -201,10 +198,6 @@ public class Tile {
 
     public int getBombCount(){
         return bombCount;
-    }
-
-    public void setEnabled(boolean enabled){
-        button.setEnabled(enabled);
     }
 
     public JButton getButton(){
