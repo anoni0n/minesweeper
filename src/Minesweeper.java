@@ -5,11 +5,14 @@ import java.util.Objects;
 
 public class Minesweeper {
     private final JFrame frame = new JFrame("Minesweeper");
-    private JPanel panel;
+    private JPanel panel1;
+    private JPanel panel2 = new JPanel();
+    public static final JLabel time = new JLabel("");
     public static Boolean GAME_ACTIVE;
     public static int BOMB_COUNT;
     public static int BOARD_DIMENSIONS;
     public static Tile[][] BOARD;
+
 
 
     public Minesweeper() {
@@ -30,19 +33,20 @@ public class Minesweeper {
             case ("Medium") -> BOARD_DIMENSIONS = 20;
             case ("Hard") -> BOARD_DIMENSIONS = 40;
         }
-        panel = new JPanel(new GridLayout(BOARD_DIMENSIONS, BOARD_DIMENSIONS, 0, 0));
+        panel1 = new JPanel(new GridLayout(BOARD_DIMENSIONS, BOARD_DIMENSIONS, 0, 0));
         BOMB_COUNT = (int) (Math.pow(BOARD_DIMENSIONS,2)/5);
         BOARD = new Tile[BOARD_DIMENSIONS][BOARD_DIMENSIONS];
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         for (int i = 0; i < BOARD_DIMENSIONS; i++) {
             for (int j = 0; j < BOARD_DIMENSIONS; j++) {
                 Tile tile = new Tile(new JButton(), i, j);
                 BOARD[i][j] = tile;
-                panel.add(tile.getButton());
+                panel1.add(tile.getButton());
             }
         }
-
-        frame.add(panel);
+        panel2.add(time);
+        frame.add(panel2,BorderLayout.NORTH);
+        frame.add(panel1);
         frame.pack();
         frame.setVisible(true);
     }
