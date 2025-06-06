@@ -11,6 +11,7 @@ import java.util.TimerTask;
 public class Tile {
 
     private final JButton button;
+    private static ArrayList<Tile> cleared = new ArrayList<>();
     private final int row;
     private final int col;
     private int bombCount;
@@ -255,9 +256,10 @@ public class Tile {
     public void clearEmptyTiles(Tile tile){
         if (tile.getBombCount() == 0){
             tile.setIcon(CLEARED_TILE);
+            cleared.add(tile);
             for (int i = 0; i < Minesweeper.BOARD_DIMENSIONS; i++){
                 for (int j = 0; j < Minesweeper.BOARD_DIMENSIONS; j++){
-                    if (isNear(tile,BOARD[i][j],1)){
+                    if (isNear(tile,BOARD[i][j],1) && !cleared.contains(BOARD[i][j])){
                         clearEmptyTiles(BOARD[i][j]);
                     }
                 }
